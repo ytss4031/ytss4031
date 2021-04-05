@@ -28,7 +28,7 @@ import java.util.*;
 发现只剩下了一种情况,(4,13),很显然庞涓能判断出来,故本题答案为(4,13)
 下面的程序计算的是孙膑说完话后,庞涓依此作出判断,排除不符合条件之后的情况
  */
-public class Test {
+public class Test2 {
     /*
     判断是否为素数,是就返回true 否就返回false
      */
@@ -64,13 +64,11 @@ public class Test {
          */
         Map<String,Integer> maps = new HashMap<>();
         Map<String,Integer> maps2 = new HashMap<>();
-        Map<String,Integer> maps4 = new HashMap<>();
         for(int i = 2;i<=98;i+=2){
             for(int j = 3;j<=99;j+=2){
                 for(Integer t : lists){
                     if((i+j)==t){
                         maps.put(i+","+j,i*j);
-                        maps4.put(i+","+j,i+j);
                     }
                 }
             }
@@ -79,7 +77,7 @@ public class Test {
         /**
          * 这个相当于孙膑说完话后,庞涓排除用的,
          *  就是把所有情况都列出来,
-         * 把积相同的剔除出去,尽管如此还没有完全排除,
+         * 把积相同的剔除出去,尽管如此还有完全排除,
          */
         for(String key : maps.keySet()){
             int count = 0;
@@ -89,41 +87,48 @@ public class Test {
                 }
             }
             if(count==1){
-                maps2.put(key,maps.get(key));
+                 maps2.put(key,maps.get(key));
             }
         }
-        /*
-             可能庞涓还没说,孙膑就已经猜出来了,
-             即在[2,99]范围内这个乘积只有这一种拆分方式
-            下面就是要把这种情况给剔除出去,把符合条件的放到一个新的map中
-         */
         Map<String,Integer> maps3 = new HashMap<>();
-        for(String key : maps2.keySet()){
-            int k = 0,i,j;
-            for(i = 2;i<=98;i++){
-                for(j = i+1;j<=99;j++){
+        Map<String,Integer> maps5 =new HashMap<>();
+        for(int i = 2;i<=98;i++){
+            for(int j = i+1;j<=99;j++){
+                for(String key : maps2.keySet())
                     if((i*j)==maps2.get(key)) {
-                        k++;
+                        maps3.put(i+","+j,i*j);
+                        maps5.put(i+","+j,i+j);
                     }
+            }
+        }
+
+        Map<String,Integer> maps4 = new HashMap<>();
+        for(String key : maps3.keySet()){
+            int st = 0;
+            for(String key3 : maps3.keySet()){
+                if(maps3.get(key).equals(maps3.get(key3))){
+                    st++;
                 }
             }
-            if(k>1) maps3.put(key,maps4.get(key));
+            if(st>1) maps4.put(key,maps5.get(key));
         }
-
-        /*
-              将value集中放到一个集合中去,
-              然后对这个集合排序,再按集合中的顺序依次打印
-         */
+        Map<String,Integer> maps6 = new HashMap<>();
+        for(Integer s : lists){
+            for(String key : maps4.keySet()){
+                if(maps4.get(key).equals(s)) {
+                    maps6.put(key,maps4.get(key));
+                }
+            }
+        }
         List<Integer> list2 = new ArrayList<>();
-
-        for(String key : maps3.keySet()){
-            list2.add(maps3.get(key));
+        for(String key : maps6.keySet()){
+            list2.add(maps6.get(key));
         }
         List<Integer> w = new ArrayList<>();
         w = list2;
         for(int i = 0; i<list2.size(); i++){
             for(int j=i+1;j<list2.size();j++){
-                if(list2.get(i).equals(list2.get(j))) {
+                if(list2.get(i)==list2.get(j)) {
                     w.remove(j);
                 }
             }
@@ -131,11 +136,12 @@ public class Test {
         Collections.sort(w);
         for(Integer i : w){
             System.out.println(i+":");
-            for(String key3 : maps3.keySet()){
-                if(i==maps3.get(key3)){
-                    System.out.println("key值: "+key3+"  "+"value值: "+maps3.get(key3));
+            for(String key6 : maps6.keySet()){
+                if(i==maps6.get(key6)){
+                    System.out.println("key值: "+key6+"  "+"value值: "+maps6.get(key6));
                 }
             }
         }
     }
 }
+
